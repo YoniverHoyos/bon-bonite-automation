@@ -1,0 +1,21 @@
+{
+  "name": "bon-bonite-automation",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Automatización E2E para el reto técnico de Bon-bonite",
+  "scripts": {
+    "test:registration": "cucumber-js features/registration.feature",
+    "test:account": "cucumber-js features/account.feature",
+    "test:purchase": "cucumber-js features/purchase.feature"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^12.9.0",
+    "@playwright/test": "^1.63.0",
+    "cross-env": "^10.0.0",
+    "dotenv": "^18.0.4",
+    "playwright": "^1.63.0",
+    "prettier": "^3.6.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
