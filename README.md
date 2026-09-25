@@ -43,22 +43,22 @@ Validates that a registered user can:
 
 Validates the complete purchase journey:
 
-Register a new user.
-Open the products menu.
-Validate the main menu options.
-Navigate to Shoes.
-Navigate to Boots and Booties.
-Select a product.
-Check for an available product size.
-If the selected product has no available size, try the next available product.
-Select an available size.
-Add the product to the shopping cart.
-Open the cart.
-Start checkout.
-Complete the required shipping information.
-Accept the terms and conditions.
-Register the order.
-Validate the successful order confirmation.
+- Register a new user.
+- Open the products menu.
+- Validate the main menu options.
+- Navigate to Shoes.
+- Navigate to Boots and Booties.
+- Select a product.
+- Check for an available product size.
+- If the selected product has no available size, try the next available product.
+- Select an available size.
+- Add the product to the shopping cart.
+- Open the cart.
+- Start checkout.
+- Complete the required shipping information.
+- Accept the terms and conditions.
+- Register the order.
+- Validate the successful order confirmation.
 
 ## Installation
 
