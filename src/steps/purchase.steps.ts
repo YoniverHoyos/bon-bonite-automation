@@ -56,3 +56,9 @@ Then('the order should be created successfully', async () => {
 
   await checkoutPage.verifyOrderCreated();
 });
+
+Then('the main menu options should be displayed', async () => {
+  const productPage = new ProductPage(page);
+
+  await productPage.verifyMainMenuOptions();
+});

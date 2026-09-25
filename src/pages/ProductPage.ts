@@ -14,14 +14,83 @@ export class ProductPage {
       })
       .first();
 
+  private readonly bagsLink =
+    this.page
+      .locator('a:not([href])')
+      .filter({
+        hasText: /^Bolsos$/,
+      })
+      .first();
+
+  private readonly beltsLink =
+    this.page
+      .locator('a')
+      .filter({
+        hasText: /^Cinturones$/,
+      })
+      .first();
+
+  private readonly accessoriesLink =
+    this.page
+      .locator('a')
+      .filter({
+        hasText: /^Accesorios$/,
+      })
+      .first();
+
+  private readonly outletLink =
+    this.page
+      .locator('a')
+      .filter({
+        hasText: /^Outlet$/,
+      })
+      .first();
+
+  private readonly giftCardsLink =
+    this.page
+      .locator('a')
+      .filter({
+        hasText: /^Bonos de regalo$/,
+      })
+      .first();
+
+  private readonly accountLink =
+    this.page
+      .locator('a')
+      .filter({
+        hasText: /^Mi cuenta$/,
+      })
+      .first();
+
+  private readonly customerServiceLink =
+    this.page
+      .locator('a')
+      .filter({
+        hasText: /^Servicio al cliente$/,
+      })
+      .first();
+
+  private readonly socialResponsibilityLink =
+    this.page
+      .locator('a')
+      .filter({
+        hasText: /^Responsabilidad social$/,
+      })
+      .first();
+
+  private readonly pqrsLink =
+    this.page
+      .locator('a')
+      .filter({
+        hasText: /^PQRS$/,
+      })
+      .first();
+
   private readonly bootsAndBootiesLink =
     this.page.getByRole('link', {
       name: 'Botas y botines',
       exact: true,
     });
-
-  private readonly productImage =
-    this.page.locator('#image-1031469');
 
   private readonly addToCartButton =
     this.page.getByRole('button', {
@@ -35,18 +104,28 @@ export class ProductPage {
       timeout: 10000,
     });
 
-    const menuState =
-      await this.desktopMenuButton.getAttribute('aria-pressed');
+    await this.desktopMenuButton.click();
+  }
 
-    if (menuState === 'false') {
-      await this.desktopMenuButton.click();
+  async verifyMainMenuOptions(): Promise<void> {
+    const menuOptions = [
+      this.shoesLink,
+      this.bagsLink,
+      this.beltsLink,
+      this.accessoriesLink,
+      this.outletLink,
+      this.giftCardsLink,
+      this.accountLink,
+      this.customerServiceLink,
+      this.socialResponsibilityLink,
+      this.pqrsLink,
+    ];
+
+    for (const menuOption of menuOptions) {
+      await expect(menuOption).toBeVisible({
+        timeout: 10000,
+      });
     }
-
-    await expect(this.desktopMenuButton).toHaveAttribute(
-      'aria-pressed',
-      'true',
-      { timeout: 5000 }
-    );
   }
 
   async openShoesMenu(): Promise<void> {
@@ -66,27 +145,55 @@ export class ProductPage {
   }
 
   async selectProduct(): Promise<void> {
-    await expect(this.productImage).toBeVisible({
-      timeout: 10000,
-    });
+    const products = this.page.locator(
+      'img[id^="image-"]'
+    );
 
-    await this.productImage.click();
+    const productCount = await products.count();
 
-    await this.selectAvailableSize();
-  }
+    for (let i = 0; i < productCount; i++) {
+      const product = products.nth(i);
 
-  private async selectAvailableSize(): Promise<void> {
-    const availableSize = this.page.locator(
-      'button.variation-button[data-attribute_name="attribute_pa_talla"]:not(.disabled)'
-    ).first();
+      if (!(await product.isVisible())) {
+        continue;
+      }
 
-    await expect(availableSize).toBeVisible({
-      timeout: 10000,
-    });
+      await product.click();
 
-    await availableSize.click();
+      const availableSize = this.page.locator(
+        'button.variation-button[data-attribute_name="attribute_pa_talla"]:not(.disabled)'
+      ).first();
 
-    await expect(availableSize).toHaveClass(/selected/);
+      const sizeAvailable = await availableSize
+        .waitFor({
+          state: 'visible',
+          timeout: 3000,
+        })
+        .then(() => true)
+        .catch(() => false);
+
+      if (sizeAvailable) {
+        await availableSize.click();
+
+        await expect(availableSize).toHaveClass(/selected/);
+
+        return;
+      }
+
+      await this.page.goBack({
+        waitUntil: 'domcontentloaded',
+      });
+
+      await expect(
+        this.page.locator('img[id^="image-"]').first()
+      ).toBeVisible({
+        timeout: 10000,
+      });
+    }
+
+    throw new Error(
+      'No se encontró ningún producto con talla disponible.'
+    );
   }
 
   async addToCart(): Promise<void> {
